@@ -58,7 +58,7 @@ class DoorVivintCard extends HTMLElement {
             }
             #cameraview img{
                 object-fit: cover;
-                height: {config.camera_heigh};
+                height: {config.camera_height};
             }
             mwc-button {
                 margin-right: 16px;
