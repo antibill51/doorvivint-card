@@ -72,9 +72,9 @@ class DoorVivintCard extends HTMLElement {
         <div class='button'>
             <mwc-button raised id='btn-open-door'>` + 'Ouvrir le portail' + `</mwc-button>
             <mwc-button raised id='btn-make-call'>` + 'Démarrer la communication' + `</mwc-button>
-            <mwc-button style='display:none' raised id='btn-accept-call'>` + 'Accepter l'appel' + `</mwc-button>
-            <mwc-button style='display:none' raised id='btn-reject-call'>` + 'Rejeter l'appel' + `</mwc-button>
-            <mwc-button style='display:none' raised id='btn-end-call'>` + 'Terminer l'appel' + `</mwc-button>
+            <mwc-button style='display:none' raised id='btn-accept-call'>` + 'Accepter l\'appel' + `</mwc-button>
+            <mwc-button style='display:none' raised id='btn-reject-call'>` + 'Rejeter l\'appel' + `</mwc-button>
+            <mwc-button style='display:none' raised id='btn-end-call'>` + 'Terminer l\'appel' + `</mwc-button>
         </div>
         `;
         card.appendChild(content);
