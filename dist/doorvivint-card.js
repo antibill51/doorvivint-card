@@ -13,11 +13,15 @@ class DoorVivintCard extends HTMLElement {
         } else if(this.cameraEntityHasNewAccessToken(hass)) {
             this.updateCameraView(hass);
         }
+										
     }
 
     setConfig(config) {
         if (!config.camera_entity) {
             throw new Error('You need to define a camera entity');
+        }
+        if (!config.camera_height) {
+            throw new Error('You need to define a camera height (ex: 400px)');	
         }
         if(!config.sip_settings) {
             throw new Error('You need to define the SIP settings');
@@ -27,6 +31,14 @@ class DoorVivintCard extends HTMLElement {
             if(!config.sip_settings.sip_username) throw new Error('You need to define the SIP username');
             if(!config.sip_settings.sip_password) throw new Error('You need to define the SIP password');
         }
+        if(!config.devices_settings) {
+            throw new Error('You need to define the SIP devices settings');
+        } else {
+            if(!config.devices_settings.sip_rejected_input_boolean) throw new Error('You need to define the SIP call rejected boolean');
+            if(!config.devices_settings.sip_answered_input_boolean) throw new Error('You need to define the SIP call rejected boolean');
+            if(!config.devices_settings.sip_ringing_input_boolean) throw new Error('You need to define the SIP ringing device');
+            if(!config.devices_settings.sip_opendoor_device) throw new Error('You need to define the SIP opendoor device');
+        }		
         this.config = config;
         const root = this.shadowRoot;
         if (root.lastChild) root.removeChild(root.lastChild);
@@ -46,7 +58,7 @@ class DoorVivintCard extends HTMLElement {
             }
             #cameraview img{
                 object-fit: cover;
-                height: 400px;
+                height: {config.camera_heigh};
             }
             mwc-button {
                 margin-right: 16px;
@@ -58,11 +70,11 @@ class DoorVivintCard extends HTMLElement {
             <audio id='audio-player'></audio>
         </div>
         <div class='button'>
-        <!--<mwc-button raised id='btn-open-door'>` + 'Open the portal' + `</mwc-button> -->
-            <mwc-button raised id='btn-make-call'>` + 'Call the Doorbell' + `</mwc-button>
-            <mwc-button style='display:none' raised id='btn-accept-call'>` + 'Accept call' + `</mwc-button>
-            <mwc-button style='display:none' raised id='btn-reject-call'>` + 'Reject call' + `</mwc-button>
-            <mwc-button style='display:none' raised id='btn-end-call'>` + 'Terminate call' + `</mwc-button>
+            <mwc-button raised id='btn-open-door'>` + 'Ouvrir le portail' + `</mwc-button>
+            <mwc-button raised id='btn-make-call'>` + 'Démarrer la communication' + `</mwc-button>
+            <mwc-button style='display:none' raised id='btn-accept-call'>` + 'Accepter l'appel' + `</mwc-button>
+            <mwc-button style='display:none' raised id='btn-reject-call'>` + 'Rejeter l'appel' + `</mwc-button>
+            <mwc-button style='display:none' raised id='btn-end-call'>` + 'Terminer l'appel' + `</mwc-button>
         </div>
         `;
         card.appendChild(content);
@@ -84,10 +96,10 @@ class DoorVivintCard extends HTMLElement {
         let droidCard = this;
         console.info("%c  DoorVivint-Card  \n%c  Version 0.1.0    ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");
         //If you want to add another button to perform some other action, can use the following:
-//      let openDoorBtn = droidCard.getElementById('btn-open-door');
-//      openDoorBtn.addEventListener('click', function(opendoor) {
-//          hass.callService('input_boolean', 'turn_on', { entity_id: 'input_boolean.door' });
-//      });
+      let openDoorBtn = droidCard.getElementById('btn-open-door');
+      openDoorBtn.addEventListener('click', function(opendoor) {
+          hass.callService('homeassistant', 'turn_on', { entity_id: {this.config.devices_settings.sip_opendoor_device} });
+      });
 
         // Audio
         //   Local audio stream (input from mic, output to speaker) is handled
@@ -111,7 +123,13 @@ class DoorVivintCard extends HTMLElement {
         //Create a new SIP User Agent, and start it (connect to SIP server, Register, etc.)
         this.sipPhone = new JsSIP.UA(configuration);
         this.sipPhone.start();
+							 
+																	
+																  
+																									  
+		   
 
+																								 
 
         // Register callbacks for outgoing call events.
         // It appears the following eventHandlers are JsSIP.RTCSession Events which can 
@@ -149,7 +167,7 @@ class DoorVivintCard extends HTMLElement {
                 console.log('Session - Incoming call from ' + session.remote_identity );
 
                 //If you want to perform an action on incoming call, can use the following:
-//              hass.callService('input_boolean', 'turn_on', { entity_id: 'input_boolean.gds_ringing' });
+//              hass.callService('input_boolean', 'turn_on', { entity_id: {this.config.sip_settings.sip_ringing_input_boolean} });
 
                 let acceptCallBtn = droidCard.getElementById('btn-accept-call');
                 let rejectCallBtn = droidCard.getElementById('btn-reject-call');
@@ -173,6 +191,10 @@ class DoorVivintCard extends HTMLElement {
                 session.on("peerconnection", () => {
                     session.connection.addEventListener("addstream", (e) => {
                         console.log('Incoming - adding audiostream')
+																			  
+																 
+																			
+																					   
                         remoteAudio.srcObject = e.stream;
                         remoteAudio.play();
                     })
@@ -181,14 +203,14 @@ class DoorVivintCard extends HTMLElement {
                     session.answer(callOptions);
 
                     //If you want to perform an action on accepting an incoming call, can use the following:
-//                  hass.callService('input_boolean', 'turn_off', { entity_id: 'input_boolean.gds_ringing' });
+                  hass.callService('input_boolean', 'turn_on', { entity_id: {this.config.devices_settings.sip_answered_input_boolean} });
 
                 });
                 endCallBtn.addEventListener('click', () => session.terminate());
                 rejectCallBtn.addEventListener('click', () => {
 
                     //If you want to perform an action on rejecting an incoming call, can use the following:
-//                  hass.callService('input_boolean', 'turn_off', { entity_id: 'input_boolean.gds_ringing' });
+                  hass.callService('input_boolean', 'turn_on', { entity_id: {this.config.devices_settings.sip_rejected_input_boolean} });
 
                     session.answer(callOptions);
                     setTimeout(() => {
@@ -342,4 +364,3 @@ class DoorVivintCard extends HTMLElement {
 }
 
 customElements.define('doorvivint-card', DoorVivintCard);
-
