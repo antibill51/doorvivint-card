@@ -98,7 +98,7 @@ class DoorVivintCard extends HTMLElement {
         //If you want to add another button to perform some other action, can use the following:
       let openDoorBtn = droidCard.getElementById('btn-open-door');
       openDoorBtn.addEventListener('click', function(opendoor) {
-          hass.callService('homeassistant', 'turn_on', { entity_id: {this.config.devices_settings.sip_opendoor_device} });
+          hass.callService('homeassistant', 'turn_on', { entity_id: this.config.devices_settings.sip_opendoor_device });
       });
 
         // Audio
@@ -167,7 +167,7 @@ class DoorVivintCard extends HTMLElement {
                 console.log('Session - Incoming call from ' + session.remote_identity );
 
                 //If you want to perform an action on incoming call, can use the following:
-//              hass.callService('input_boolean', 'turn_on', { entity_id: {this.config.sip_settings.sip_ringing_input_boolean} });
+              hass.callService('input_boolean', 'turn_on', { entity_id: this.config.sip_settings.sip_ringing_input_boolean });
 
                 let acceptCallBtn = droidCard.getElementById('btn-accept-call');
                 let rejectCallBtn = droidCard.getElementById('btn-reject-call');
@@ -203,14 +203,14 @@ class DoorVivintCard extends HTMLElement {
                     session.answer(callOptions);
 
                     //If you want to perform an action on accepting an incoming call, can use the following:
-                  hass.callService('input_boolean', 'turn_on', { entity_id: {this.config.devices_settings.sip_answered_input_boolean} });
+                  hass.callService('input_boolean', 'turn_on', { entity_id: this.config.devices_settings.sip_answered_input_boolean });
 
                 });
                 endCallBtn.addEventListener('click', () => session.terminate());
                 rejectCallBtn.addEventListener('click', () => {
 
                     //If you want to perform an action on rejecting an incoming call, can use the following:
-                  hass.callService('input_boolean', 'turn_on', { entity_id: {this.config.devices_settings.sip_rejected_input_boolean} });
+                  hass.callService('input_boolean', 'turn_on', { entity_id: this.config.devices_settings.sip_rejected_input_boolean });
 
                     session.answer(callOptions);
                     setTimeout(() => {
