@@ -50,9 +50,12 @@ class DoorVivintCard extends HTMLElement {
 								  
 											   
 			 
-                cameraview img{
-                    width: 100%;
-                }
+//            #cameraview img{
+//                object-fit: cover;
+//                height: 400px;
+//           }
+
+
                 mwc-button {
                     margin-right: 16px;
                 }
@@ -308,7 +311,7 @@ class DoorVivintCard extends HTMLElement {
                 cameraView.removeChild(cameraView.firstChild);
             }
             cameraView.appendChild(imgEl);
-            console.log('initialized camera view');
+            console.log('initialized camera view' + imgEl.src );
         }
     
         updateCameraView(hass) {
