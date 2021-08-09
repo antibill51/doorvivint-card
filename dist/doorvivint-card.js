@@ -50,7 +50,7 @@ class DoorVivintCard extends HTMLElement {
 								  
 											   
 			 
-                #cameraview img{
+                cameraview img{
                     width: 100%;
                 }
                 mwc-button {
